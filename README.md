@@ -1,4 +1,4 @@
-# Keylogger-Screenshot-and-Keyboard-Input
+# Keylogger-with-Screenshot-Capture
 Hi friends, in this project, I designed a keylogger in python for educational purposes.
 With this keylogger, it is possible to take screenshots periodically and at the same time get the keyboard input from the user.
 
